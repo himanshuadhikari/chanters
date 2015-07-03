@@ -1,0 +1,102 @@
+@media (min-width:320px)
+{
+	.login-wrap
+	{
+		width:85%;
+		margin:50% auto;
+	}
+	body
+	{
+		background-size:100% 480px;
+	}
+	.wrapper
+	{
+		min-height:480px;
+	}
+}
+@media (min-width:360px)
+{
+	.login-wrap
+	{
+		width:85%;
+		margin:50% auto;
+	}
+	body
+	{
+		background-size:100% 640px;
+	}
+	.wrapper
+	{
+		min-height:640px;
+	}
+}
+
+@media (min-width:768px)
+{
+	.login-wrap
+	{
+		width:50%;
+		 margin:50% auto;
+	}
+	body
+	{
+		background-size:100% 1024px;
+	}
+	.wrapper
+	{
+		min-height:1024px;
+	}
+}
+@media (min-width:980px)
+{
+	.login-wrap
+	{
+		width:40%;
+		 margin:50% auto;
+	}
+	body
+	{
+		background-size:100% 1280px;
+	}
+	.wrapper
+	{
+		min-height:1280px;
+	}
+}
+
+@media (min-width:1200px)
+{
+	.login-wrap
+	{
+		width:25%;
+		margin:15% auto;
+	}
+	body
+	{
+		background-size:100% 670px;
+	}
+	.wrapper
+	{
+		min-height:670px;
+	}
+	.notification
+	{
+		left:149px;
+	}
+}
+@media (min-width:1900px)
+{
+	.login-wrap
+	{
+		width:25%;
+		 margin:20% auto;
+	}
+	body
+	{
+		background-size:100% 1005px;
+	}
+	.wrapper
+	{
+		min-height:1005px;
+	}
+}

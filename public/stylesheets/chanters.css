@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    position: relative;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    color: White;
+    font-size: 14px;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.wrapper-fluid {
+    position: relative;
+    width: 100%;
+}
+
+.header,
+.footer {
+    height: 40px;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    z-index: 99;
+}
+
+.btm-border {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.dark-div {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.fixed-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.singin,
+.logo {
+    padding: 10px 20px;
+    color: White;
+    position: absolute;
+    left: 50px;
+    bottom: 50px;
+    border-radius: 5px;
+}
+
+.logo {
+    left: auto;
+    right: 50px;
+}
+
+.logout {
+    position: absolute;
+    right: 100px;
+    z-index: 99;
+    top: 0;
+}
+
+.btn-menu {
+    position: relative;
+    color: white;
+    outline: none;
+    font-weight: 600;
+    display: inline-block;
+    padding: 8px 13px;
+    border: none;
+    background-color: transparent;
+    margin-top: 4px;
+    cursor: pointer;
+    background: red;
+    border-radius: 6px;
+    box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+    -o-box-shadow: inset 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
+}
+
+.btn-menu:hover {
+    box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+    -o-box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+}
+
+.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+
+.wall {
+    height: 100%;
+    /*background-image:url('../siteimages/Him207.jpg');
+    background-repeat:no-repeat;
+    background-size: 100%;*/
+    
+    z-index: 1;
+    transition: all 1s ease-in-out;
+}
+
+.wall-img {
+    width: 100%;
+}
+
+chanters-view{
+    border: 1px solid red;
+    margin-top: 40px;
+}
