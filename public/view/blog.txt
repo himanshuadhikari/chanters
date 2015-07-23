@@ -1,0 +1,79 @@
+
+================================== Heading ==============================================
+Function expressions vs. Function declarations
+================================== Heading ==============================================
+
+
+Today I want to share a comman problem with the one who is reading this. 
+
+Problem name is calling a function before it is defined :- 
+
+So if you have defined a function with var keyword and called it before defining like : -
+
+==========================================================================================
+
+forEach(array, function(el, index, arr) {
+        console.log("Array iterator", el, " = ", arr, " = ", index);
+})
+
+
+var forEach = function(obj, iterator) {
+
+        console.log(isString(obj));
+        if (obj instanceof Array)
+            obj.forEach(function(element, index, array) {
+                if (iterator.call)
+                    iterator.call(window, element, index, array);
+
+            });
+
+        else if (typeof obj === "object")
+            Object.keys(obj).forEach(function(key, index, object) {
+                if (iterator.call)
+                    iterator.call(window, key, obj[key], index);
+
+            });
+
+        else
+            throwError("Only Objects and Arrays are accepted.");
+
+}
+
+
+==========================================================================================
+
+In this browser's interpretator will throw error because you know the reason.
+
+But there is one case browser will not throw and error :-
+
+==========================================================================================
+
+forEach(array, function(el, index, arr) {
+        console.log("Array iterator", el, " = ", arr, " = ", index);
+})
+
+
+function forEach(obj, iterator) {
+
+        console.log(isString(obj));
+        if (obj instanceof Array)
+            obj.forEach(function(element, index, array) {
+                if (iterator.call)
+                    iterator.call(window, element, index, array);
+
+            });
+
+        else if (typeof obj === "object")
+            Object.keys(obj).forEach(function(key, index, object) {
+                if (iterator.call)
+                    iterator.call(window, key, obj[key], index);
+
+            });
+
+        else
+            throwError("Only Objects and Arrays are accepted.");
+
+}
+
+
+==========================================================================================

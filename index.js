@@ -20,6 +20,10 @@ app.get('/register', function(req, res) {
     res.render(__dirname + '/public/view/register.html');
 });
 
+app.get('/practice', function(req, res) {
+    res.render(__dirname + '/public/practice.html');
+});
+
 app.get('/production', function(req, res) {
     res.render(__dirname + '/public/view/production.html');
 });
