@@ -26,6 +26,10 @@ app.get('/practice', function(req, res) {
 app.get('/production', function(req, res) {
     res.render(__dirname + '/public/view/production.html');
 });
+app.get('/default', function(req, res) {
+    // res.render(__dirname + '/public/view/home.html');
+    res.render(__dirname + '/public/index_.html');
+});
 app.get('/home', function(req, res) {
     res.render(__dirname + '/public/view/home.html');
 });
@@ -49,7 +53,7 @@ app.get('/home/himanshu/Videos/:name', function(req, res) {
 
     var readStream = fs.createReadStream(filePath);
     util.pump(readStream, res);
-    
+
 });
 
 var mongodb = require('mongodb');

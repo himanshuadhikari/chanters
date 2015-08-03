@@ -1,0 +1,65 @@
+.login-wrap {
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.light-div {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.box-shadow-inset {
+    box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.2);
+    -o-box-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.2);
+}
+
+.border {
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.dark-div {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.btm-border {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.txt-shadow {
+    text-shadow: 0 0 50px rgba(0, 0, 0, 1);
+}
+
+.form-text {
+    height: 50px !important;
+    font-size: 20px;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    font-weight: 300;
+    padding: 0px 0px 0px 20px !important;
+    margin: 0px !important;
+    border: none !important;
+    border-radius: 0px !important;
+    color: white !important;
+    background: transparent !important;
+    text-shadow: 0 -1px rgba(0, 0, 0, .5);
+    font-family: Lato, Helvetica, Arial, sans-serif;
+}
+
+.email::-webkit-input-placeholder {
+    color: white;
+}
+
+.password::-webkit-input-placeholder {
+    color: white;
+}
+
+::-moz-placeholder {
+    /* Firefox 19+ */
+    color: white;
+}
+
+:-ms-input-placeholder {
+    color: white;
+}

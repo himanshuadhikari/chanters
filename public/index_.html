@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chanters Login - Welcome to Chanters</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/chanters.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/logo.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/media.css">
+    <script src="scripts/chanters.js"></script>
+</head>
+
+<body>
+    <div class="wrapper-fluid">
+        <chanters-header>
+            <template>
+                <div id="header" class="header btm-border dark-div fixed-top">
+                    <div id="logo" class="border">
+                        <div id="bar1"></div>
+                        <div id="bar2"></div>
+                        <div id="bar3"></div>
+                        <div id="bar4"></div>
+                    </div>
+                    <div class="logout">
+                        <button class="txt-shadow btn-menu">Developers</button>
+                        <button class="txt-shadow btn-menu">Log In</button>
+                    </div>
+                </div>
+            </template>
+            <script>
+            Chanters("chanters-header", {});
+            </script>
+        </chanters-header>
+        <chanters-background attributes="src:images/vidyut-jamwal-7a.jpg">
+            <template>
+                <div class="wrapper-fixed wall fixed-top" style="z-index:-1">
+                    <img class="wall-img" src="{{src}}" />
+                </div>
+            </template>
+            <script>
+            Chanters("chanters-background", {});
+            </script>
+        </chanters-background>
+
+        <chanters-view attributes="template:/home">
+            <template>
+            </template>
+            <script>
+            Chanters("chanters-view", {
+                domReady: function() {
+                    this.loadTemplate(function(error, userRequestedFile) {
+                        this.insertToDom(userRequestedFile);
+                    }.bind(this));
+                },
+                loadTemplate: function(cb) {
+                    var templateUrl = this.template;
+
+                    var xmlhttp;
+                    if (templateUrl.length == 0) {
+                        // document.getElementById("txtHint").innerHTML = "";
+                        // return;
+                    }
+                    if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+                        xmlhttp = new XMLHttpRequest();
+                    } else { // code for IE6, IE5
+                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                    xmlhttp.onreadystatechange = function() {
+                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                            cb(null, xmlhttp.responseText)
+                        }
+                    }
+                    xmlhttp.open("GET", templateUrl, true);
+                    xmlhttp.send();
+                },
+                insertToDom: function(html) {
+                    var domParser = document.createElement("div");
+                    domParser.innerHTML = html;
+
+                    var userTag = domParser.children[0];
+                    var tagToInsert = document.createElement(userTag.tagName);
+                    tagToInsert.appendChild(userTag.querySelector("template"));
+
+                    var script = document.createElement("script");
+                    script.text = userTag.querySelector("script").text;
+
+                    tagToInsert.appendChild(script);
+
+                    this.innerHTML = "";
+                    this.appendChild(tagToInsert);
+                },
+                template_: function() {
+                    this.domReady();
+                }
+            });
+            </script>
+        </chanters-view>
+        
+        <chanters-fotter>
+            <template>
+                <div class="fixed-bottom footer top-border dark-div box-shadow">
+                    <button class="border box-shadow dark-div singin txt-shadow">Sing up</button>
+                    <span class="border box-shadow dark-div txt-shadow logo">Chanters</span>
+                </div>
+            </template>
+            <script>
+            Chanters("chanters-fotter", {});
+            </script>
+        </chanters-fotter>
+    </div>
+</body>
+
+</html>
