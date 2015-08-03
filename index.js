@@ -1,8 +1,7 @@
 var express = require('express');
 var app = express();
 
-
-
+var util = require('util');
 
 app.use(express.static(__dirname + '/public'));
 app.engine('html', require('ejs').renderFile);
@@ -26,6 +25,31 @@ app.get('/practice', function(req, res) {
 
 app.get('/production', function(req, res) {
     res.render(__dirname + '/public/view/production.html');
+});
+app.get('/home', function(req, res) {
+    res.render(__dirname + '/public/view/home.html');
+});
+
+app.get('/songList', function(req, res) {
+    var fs = require('fs');
+    fs.readdir("/home/himanshu/Videos", function(err, data) {
+        res.send(JSON.stringify(data));
+    })
+});
+
+app.get('/home/himanshu/Videos/:name', function(req, res) {
+    var fs = require('fs');
+    var filePath = "/home/himanshu/Videos/" + req.params.name;
+    var stat = fs.statSync(filePath);
+
+    res.writeHead(200, {
+        'Content-Type': 'audio/mpeg',
+        'Content-Length': stat.size
+    });
+
+    var readStream = fs.createReadStream(filePath);
+    util.pump(readStream, res);
+    
 });
 
 var mongodb = require('mongodb');
@@ -74,8 +98,9 @@ var url = 'mongodb://localhost:27017/myFirstDb';
 //         //Close connection
 //     }
 // });
+var port = process.env.PORT || 4444;
 
-var server = app.listen(4444, function() {
+var server = app.listen(port, function() {
     var host = server.address().address;
     var port = server.address().port;
     console.log('Example app listening at http://%s:%s', host, port);

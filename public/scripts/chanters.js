@@ -207,9 +207,13 @@ var helper = {
         if (replaceArr)
             if (replaceArr[0].indexOf(".") === -1) {
                 var replaceWith = this.getReplaceWith(replaceArr);
-                // creating template instance first for raw nodes
-                this.mapping(n, replaceArr);
-                this.performBinding(n, replaceArr, replaceWith);
+                if (replaceWith.length === 0) { // checking if nothing found here in case of repeating on array of string instead of object
+                    this.repeaterTextNodes(n);
+                } else {
+                    // creating template instance first for raw nodes
+                    this.mapping(n, replaceArr);
+                    this.performBinding(n, replaceArr, replaceWith);
+                }
             } else {
                 if (n.childNodes.length < 1)
                     this.repeaterTextNodes(n);
@@ -288,7 +292,10 @@ var helper = {
                     if (from === With) {
                         replaceWith.push(o[With]);
                     }
-                })
+                });
+                if (o && typeof o === "number" || typeof o === "string") {
+                    replaceWith.push(o);
+                }
             })
         }
         return replaceWith;
@@ -442,6 +449,7 @@ var helper = {
     },
     repeaterTextNodes: function(n) {
         // console.log(n);
+        // debugger;
         var obj = n.objname;
         // console.log(n.objname, n.key_);
 
@@ -568,7 +576,7 @@ var helper = {
         var that = this,
             properties = this.userData.proto,
             d = this.userData.target_;
-
+        // debugger;
         Object.keys(properties).forEach(function(prop) {
             if (typeof properties[prop] !== "object") {
                 Object.defineProperty(d, prop, {
@@ -668,6 +676,27 @@ var helper = {
 
                 Object.defineProperties(tag[propertyName][index], descriptors);
             }, tag)
+            if (element && typeof element === "number" || typeof element === "string") {
+                // todo do something here repeating over array of string
+                // if (typeof properties[prop] !== "object") {
+                //     debugger;
+                //     Object.defineProperty(d, prop, {
+                //         get: function() {
+                //             // console.log("get");
+                //             return properties[prop];
+                //         },
+                //         set: function(val) {
+                //             var changer = helper.watcher(properties, prop, val);
+                //             // console.log("get");
+                //             properties[prop] = val;
+                //             helper.observing(this, changer);
+                //         },
+                //         enumerable: true
+                //     })
+                // } else {
+                //     that.observerArray(properties[prop], d, prop);
+                // }
+            }
         })
     },
     attributeObserver: function(n) {

@@ -1,0 +1,223 @@
+<chanters-songList>
+    <template>
+        <div id="title" class="btn-menu"> <span>Chanters</span></div>
+        <ul id="songList">
+        </ul>
+        <canvas id="visualizer" height="500" width="600" style="border:1px solid red;margin:0 auto; margin: 49px 0 0 307px;"></canvas>
+        <div id="player" class="dark-div">
+            <input type="range" value="20" oninput="volumeControl(event)" id="volume">
+            <input type="range" id="seek">
+            <button class="txt-shadow btn-menu" on-click="{{playSong}}">{{playPause}}</button>
+            <button class="txt-shadow btn-menu" on-click="{{previousSong}}">Previous</button>
+            <button class="txt-shadow btn-menu" on-click="{{nextSong}}">Next</button>
+            <span>{{currentTime}}</span>
+            <span>{{totalTime}}</span>
+        </div>
+        <style>
+        #songList {
+            position: fixed;
+            height: 100%;
+            width: 15%;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        
+        chanters-songList {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 15%;
+            z-index: 99;
+            height: 100%;
+        }
+        
+        #title {
+            padding: 12px 14px;
+            border: 1px solid;
+            width: 100%;
+            margin: 0;
+            border: none;
+            border-radius: 0px;
+            width: 90%;
+        }
+        
+        chanters-songList a {
+            display: block;
+            cursor: pointer;
+            padding: 10px;
+        }
+        
+        chanters-songList ul li {
+            border-bottom: 1px dotted #DDD;
+            transition: all 100ms ease-in;
+        }
+        
+        chanters-songList ul li:hover {
+            padding-left: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        #player {
+            position: fixed;
+            height: 100px;
+            width: 85%;
+            bottom: 0;
+            right: 0;
+            z-index: 9;
+            -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+        }
+        </style>
+    </template>
+    <script>
+    Chanters("chanters-songList", {
+        currentTime: '00 : 00',
+        totalTime: '00 : 00',
+        playPause: "Play",
+        domReady: function() {
+            var xmlhttp, that = this;
+            if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+                xmlhttp = new XMLHttpRequest();
+            } else { // code for IE6, IE5
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    that.createSongList(xmlhttp.responseText);
+                }
+            }
+            xmlhttp.open("GET", "/songList", true);
+            xmlhttp.send();
+            document.querySelector("chanters-fotter").style.display = "none";
+        },
+        createSongList: function(list) {
+            var list_ = JSON.parse(list);
+            var str = "";
+
+            list_.forEach(function(item) {
+                str += "<li>";
+                str += "<a onclick='playMe(event)' data-href='/home/himanshu/Videos/" + item + "' > " + item + " </a>";
+                str += "</li>";
+            })
+            this.querySelector("#songList").innerHTML = str;
+        },
+        previousSong: function() {
+            var previousSong = previous.previousElementSibling.querySelector("a");
+            playMe(undefined, previousSong);
+        },
+        nextSong: function() {
+            var nextSong = previous.nextElementSibling.querySelector("a");
+            playMe(undefined, nextSong);
+        },
+        playSong: function() {
+            var song;
+            if (!previous) {
+                song = document.querySelector("#songList li a");
+                playMe(undefined, song);
+            } else {
+                song = previous.querySelector("a");
+                playMe(undefined, song);
+            }
+            if (flag) {
+                this.playPause = "Pause";
+            } else {
+                this.playPause = "Play";
+            }
+        }
+    });
+
+    var canvas = document.querySelector("#visualizer");
+    var ctx = canvas.getContext();
+
+    var seek = document.querySelector("#seek");
+    var volume = document.getElementById("volume");
+    var player = document.querySelector("chanters-songList");
+    var audio = new Audio();
+    var flag = false;
+    var file = "";
+    var previous;
+    audio.volume = .2;
+    seek.value = 0;
+    volume.min = 0;
+    volume.max = 100;
+    audio.controls = true;
+
+    audio.ontimeupdate = function() {
+        var curtime = parseInt(audio.currentTime, 10);
+        var min = Math.floor(curtime / 60);
+        var sec = curtime % 60;
+        if (sec < 10) {
+            sec = '0' + sec;
+        }
+        if (min < 60) {
+            min = '0' + min;
+        }
+
+        if (seek.max === "NaN") {
+            seek.max = audio.duration;
+        }
+        seek.max = audio.duration;
+        seek.value = Math.floor(audio.currentTime);
+        player.currentTime = min + " : " + sec;
+    }
+    audio.onended = function() {
+        var nextSong = previous.nextElementSibling.querySelector("a");
+        playMe(undefined, nextSong);
+    }
+
+
+
+    function playMe(event, nextSong) {
+        var parent = event && event.target.parentNode || nextSong.parentNode;
+        var url = event && event.target.dataset.href || nextSong.dataset.href;
+        if (url !== file || file === "") {
+            audio.src = url;
+            audio.play();
+            flag = true;
+            file = url;
+            if (previous) {
+                previous.style.backgroundColor = "transparent";
+            }
+            parent.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            previous = parent;
+            player.playPause = "Pause";
+            console.log(audio.duration);
+            seek.max = audio.duration;
+
+        } else {
+            if (flag) {
+                audio.pause();
+                player.playPause = "Play";
+                flag = false;
+            } else {
+                flag = true;
+                player.playPause = "Pause";
+                audio.play();
+            }
+        }
+        audio.currentTime = 130;
+    }
+
+    function volumeControl(event) {
+        var volume = event.target.value;
+        audio.volume = volume / 100;
+    }
+
+    seek.oninput = function() {
+        audio.currentTime = seek.value;
+        // console.log("oninput", parseInt(seek.value), Math.floor(audio.currentTime));
+    }
+
+    audio.oncanplaythrough = function() {
+        var totalduration = audio.duration;
+        var totalminutes = Math.floor(totalduration / 60);
+        var totalseconds = Math.floor(totalduration % 60);
+        if (totalminutes < 60) {
+            totalminutes = '0' + totalminutes;
+        }
+        player.totalTime = totalminutes + ':' + totalseconds;
+    }
+
+    </script>
+</chanters-songList>
