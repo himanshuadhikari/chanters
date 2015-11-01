@@ -7,21 +7,12 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/logo.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/media.css">
     <script src="scripts/chanters.js"></script>
-    <script>
-    function selectme(event) {
-        console.log("hello");
-        debugger;
-    }
-    </script>
+    <script src="scripts/player.js" defer></script>
 </head>
 
 <body>
-    <canvas id="analyser"></canvas>
-    <audio controls repeat></audio>
-    <button onclick="play()">play</button>
-    <input type="file" webkitdirectory directory multiple onchange="selectme(event)" />
     <div class="wrapper-fluid">
-        <chanters-header>      
+        <chanters-header>
             <template>
                 <div id="header" class="header btm-border dark-div fixed-top">
                     <div id="logo" class="border">
@@ -31,13 +22,24 @@
                         <div id="bar4"></div>
                     </div>
                     <div class="logout">
-                        <button class="txt-shadow btn-menu">Developers</button>
-                        <button class="txt-shadow btn-menu">Log In</button>
+                        <button class="txt-shadow btn-menu" on-click="{{changeImage}}">Change Image</button>
+                        <!-- <button class="txt-shadow btn-menu">Log In</button> -->
                     </div>
                 </div>
             </template>
             <script>
-            Chanters("chanters-header", {});
+            Chanters("chanters-header", {
+                changeImage: function(event) {
+                    var fileSelector = document.createElement('input');
+                    fileSelector.setAttribute('type', 'file');
+                    fileSelector.setAttribute('accept', "image/*");
+                    fileSelector.click();
+                    fileSelector.onchange = function() {
+                        var _URL = window.URL || window.webkitURL;
+                        document.querySelector(".wall-img").src = _URL.createObjectURL(fileSelector.files[0]);
+                    }
+                }
+            });
             </script>
         </chanters-header>
         <chanters-background attributes="src:images/vidyut-jamwal-7a.jpg">
@@ -50,7 +52,7 @@
             Chanters("chanters-background", {});
             </script>
         </chanters-background>
-        <chanters-view attributes="template:/login">
+        <chanters-view attributes="template:/demoPlayer">
             <template>
             </template>
             <script>
@@ -62,7 +64,6 @@
                 },
                 loadTemplate: function(cb) {
                     var templateUrl = this.template;
-
                     var xmlhttp;
                     if (templateUrl.length == 0) {
                         // document.getElementById("txtHint").innerHTML = "";
@@ -105,10 +106,10 @@
         </chanters-view>
         <chanters-fotter>
             <template>
-                <div class="fixed-bottom footer top-border dark-div box-shadow">
+                <!-- <div class="fixed-bottom footer top-border dark-div box-shadow">
                     <button class="border box-shadow dark-div singin txt-shadow">Sing up</button>
                     <span class="border box-shadow dark-div txt-shadow logo">Chanters</span>
-                </div>
+                </div> -->
             </template>
             <script>
             Chanters("chanters-fotter", {});

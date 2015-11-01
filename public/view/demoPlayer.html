@@ -1,0 +1,186 @@
+<chanters-player>
+    <template>
+        <div id="welcome"></div>
+        <input type="file" id="fileupload" multiple onchange="createList(event)">
+        <div id="title" class="btn-menu"> <span>Chanters</span></div>
+        <ul id="songList">
+        </ul>
+        <canvas id="analyser"></canvas>
+        <style type="text/css">
+        chanters-player {
+            position: fixed;
+            left: 0px;
+            top: 0px;
+            background-color: rgba(0, 0, 0, 0.5);
+            width: 15%;
+            z-index: 99;
+        }
+        
+        canvas {
+            position: fixed;
+            bottom: 0px;
+            height: 110%;
+            width: 100%;
+            z-index: -1;
+            top: 40px;
+            display: none;
+        }
+        
+        #welcome {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            text-align: center;
+            top: 200px;
+            color: red;
+            font-size: 280%;
+            text-transform: capitalize;
+            text-shadow: inset 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+        }
+        
+        #title {
+            padding: 12px 14px;
+            border: 1px solid;
+            width: 100%;
+            margin: 0;
+            border: none;
+            border-radius: 0px;
+            width: 90%;
+        }
+        
+        input {
+            position: fixed;
+            display: none;
+            margin-left: 46%;
+            top: 300px;
+        }
+        
+        #songList {
+            display: none;
+            position: fixed;
+            height: 100%;
+            width: 15%;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        #songList li {
+            border-bottom: 1px dotted #DDD;
+            transition: all 100ms ease-in;
+            position: relative;
+        }
+        
+        #songList li:hover {
+            padding-left: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+        
+        #songList li a {
+            display: block;
+            cursor: pointer;
+            /*padding-top: 10px;
+            padding-left: 17px;*/
+            padding: 10px;
+            height: inherit;
+        }
+        
+        audio {
+            display: none;
+        }
+        </style>
+    </template>
+    <script>
+    Chanters("chanters-player", {
+        domReady: function() {
+            window.requestAnimationFrame(welcomeAnimation);
+        }
+    });
+    var welcome = document.querySelector("#welcome");
+    var str = "welcome to chanters";
+    var count = 0;
+
+    function welcomeAnimation() {
+        if (str[count]) {
+            welcome.innerHTML += str[count];
+            count++;
+            window.requestAnimationFrame(welcomeAnimation);
+        } else {
+            setTimeout(function() {
+                welcome.innerHTML = "upload song";
+                document.querySelector("#fileupload").style.display = "block";
+                window.cancelAnimationFrame(welcomeAnimation);
+            }, 2000)
+        }
+    }
+
+    function createList(event) {
+        var list_ = event.target.files;
+        var str = "";
+        for (var i = 0; i < list_.length; i++) {
+            if (list_[i].name.indexOf(".mp3")) {
+                var li = document.createElement('li');
+                li.innerHTML = '<a onclick="playMe(event)"> ' + list_[i].name + ' </a>';
+                li.songObject = list_[i];
+                document.querySelector("#songList").appendChild(li);
+            }
+        }
+        welcome.remove();
+        document.querySelector("#fileupload").remove();
+        document.querySelector("#songList ").style.display = "block";
+
+    }
+
+    var audio = new Audio();
+    context = new AudioContext();
+    analyser = context.createAnalyser();
+    source = context.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(context.destination);
+    var canvas = document.getElementById('analyser');
+    audio.volume = .7;
+
+    function playMe(event) {
+        var file = event.target.parentNode.songObject;
+        var _URL = window.URL || window.webkitURL;
+        audio.src = _URL.createObjectURL(file);
+        audio.load();
+        audio.play();
+        event.target.parentNode.appendChild(canvas);
+        visualizer();
+    }
+
+    var visualizer = function() {
+        canvas.style.display = "block";
+        ctx = canvas.getContext('2d');
+        analyser.connect(context.destination);
+        frameLooper();
+        bufferLength = analyser.frequencyBinCount;
+    }
+
+    function frameLooper() {
+        window.requestAnimationFrame(frameLooper);
+        fbc_array = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(fbc_array);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        var grd = ctx.createRadialGradient(75, 50, 5, 90, 60, 100);
+        // light blue
+        grd.addColorStop(0, '#E20604');
+        // dark blue
+        grd.addColorStop(.20, '#FDF629');
+        grd.addColorStop(.40, '#4AF14E');
+        grd.addColorStop(.60, '#08D8EC');
+        grd.addColorStop(.80, '#3231F0');
+        grd.addColorStop(1, '#9426A3');
+        ctx.fillStyle = grd;
+        bars = 100;
+        for (var i = 0; i < bars; i++) {
+            bar_x = i * 3;
+            bar_width = 2;
+            bar_height = -(fbc_array[i] / 3);
+            // experiment.style.transform = "scale(" + -bar_height / 10 + ")";
+            ctx.fillRect(bar_x, canvas.height, bar_width, bar_height);
+        }
+    }
+    </script>
+</chanters-player>

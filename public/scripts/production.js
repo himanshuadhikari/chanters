@@ -11,39 +11,38 @@
  * Object.observer(), Object.watch(), Object.defineProperties, Obect.defineProperty depends on the browser
  */
 
-
 (function(window, document, undefined) {
     'use strict';
     /**
      * forEach is a function which can iterate over array as well as on Objects
      * Use Case
 
-		@ FOR TESTING BASIC REQUIREMENT
-	     	var obj = {
-	        "home": "pauri",
-	        "task": "working",
-	        "hindi": "language",
-	        "array": ["one", "two", "three"]
-		    };
+        @ FOR TESTING BASIC REQUIREMENT
+            var obj = {
+            "home": "pauri",
+            "task": "working",
+            "hindi": "language",
+            "array": ["one", "two", "three"]
+            };
 
-		    var array = ["one", obj, function() {
-		        console.log("array function")
-		    }];
+            var array = ["one", obj, function() {
+                console.log("array function")
+            }];
 
-		@ FOR OBJECTS USE THIS
-		    forEach(obj, function(key, value, index) {
-		        console.log("Object iterator", key, " = ", value, " = ", index);
+        @ FOR OBJECTS USE THIS
+            forEach(obj, function(key, value, index) {
+                console.log("Object iterator", key, " = ", value, " = ", index);
 
-		        if (value.forEach)
-		            forEach(value, function(newel, newindex, newarr) {
-		                console.log("Object inner iterator function", newel, " = ", newarr, " = ", newindex);
-		            })
-		    })
+                if (value.forEach)
+                    forEach(value, function(newel, newindex, newarr) {
+                        console.log("Object inner iterator function", newel, " = ", newarr, " = ", newindex);
+                    })
+            })
 
-		@ FOR ARRAYS USE THIS
-		    forEach(array, function(el, index, arr) {
-		        console.log("Array iterator", el, " = ", arr, " = ", index);
-		    })
+        @ FOR ARRAYS USE THIS
+            forEach(array, function(el, index, arr) {
+                console.log("Array iterator", el, " = ", arr, " = ", index);
+            })
 
      **/
 
@@ -251,4 +250,12 @@
     function sliceArgs(args, startIndex) {
         return slice.call(args, startIndex || 0);
     }
+
+
+    function chanters(name, prototype) {
+        console.log(name, prototype);
+        console.log(document.querySelector(name + " template").content);
+
+    }
+    window.chanters = chanters;
 })(window, document);

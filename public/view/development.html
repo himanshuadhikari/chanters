@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Chanters Login - Welcome to Chanters</title>
+    <script src="scripts/production.js"></script>
+    <!-- <link rel="import" href="view/player.html"> -->
+</head>
+
+<body>
+    <chanters-player>
+        <template>
+            <ul id="songList">
+            </ul>
+            <div id="player" class="dark-div">
+                <input type="range" value="20" oninput="volumeControl(event)" id="volume">
+                <input type="range" id="seek" min="0" max="100" value="0">
+                <button class="txt-shadow btn-menu" on-click="{{playSong}}">{{playPause}}</button>
+                <button class="txt-shadow btn-menu" on-click="{{previousSong}}">Previous</button>
+                <button class="txt-shadow btn-menu" on-click="{{nextSong}}">Next</button>
+                <span>{{currentTime}}</span>
+                <span>{{totalTime}}</span>
+            </div>
+        </template>
+        <script>
+        chanters('chanters-player', {
+            loaded: function() {
+                console.log("loaded");
+            },
+            domLoaded: function() {
+                console.log("domLoaded");
+            },
+            playSong: function() {
+                console.log("playSong");
+            },
+            previousSong: function() {
+                console.log("previousSong");
+            },
+            nextSong: function() {
+                console.log("nextSong");
+            }
+        })
+        </script>
+    </chanters-player>
+</body>
+
+</html>
