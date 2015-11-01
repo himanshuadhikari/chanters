@@ -11,7 +11,7 @@ app.engine('html', require('ejs').renderFile);
 //     res.render('index.html');
 // });
 app.get('/', function(req, res) {
-    res.render(res.render(__dirname + '/public/view/player.html'););
+    res.render(__dirname + '/public/view/player.html');
 });
 app.get('/development', function(req, res) {
     res.render(__dirname + '/public/view/development.html');
