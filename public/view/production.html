@@ -6,48 +6,60 @@
     <!-- <link rel="stylesheet" type="text/css" href="stylesheets/chanters.css"> -->
     <!-- <link rel="stylesheet" type="text/css" href="stylesheets/logo.css"> -->
     <!-- <link rel="stylesheet" type="text/css" href="stylesheets/media.css"> -->
+    <!-- // <script src="../scripts/chanters.js"></script> -->
     <script src="../scripts/production.js"></script>
 </head>
 
 <body>
-    <!--  <h1>Hi from Chanters.js</h1>
     <chanters-header>
         <template>
             <div id="header" class="header btm-border dark-div fixed-top">
                 <div id="logo" class="border">
-                    <div id="bar1"></div>
-                    <div id="bar2"></div>
-                    <div id="bar3"></div>
-                    <div id="bar4"></div>
+                    <template repeat="bar in bars">
+                        <div on-click="{{developer}}" id="{{bar}}">{{bar}}</div>
+                    </template>
+                    <template repeat="student in students">
+                        <div on-click="{{developer}}" id="{{student.name}}">{{student.name}}</div>
+                    </template>
+                </div>
+                <div class="middle">
+                    {{search}} {{here}} ....
+                    <input type="text" on-focus="{{developer}}" value="{{query}}">
                 </div>
                 <div class="logout">
-                    <button class="txt-shadow btn-menu">Developers</button>
-                    <button class="txt-shadow btn-menu">Log In</button>
+                    <!-- <button class="txt-shadow btn-menu" on-click="{{developer}}"><span on-mouseover="{{hightlight}}">Chanter </span>Developers</button> -->
+                    <input type="text" value="{{here}}">
+                    <button class="txt-shadow btn-menu" on-mouseover="{{hightlight}}" on-click="{{logIn}}">Log In</button>
                 </div>
             </div>
         </template>
         <script>
-        // Chanters("chanters-header", {});
+        Chanters("chanters-header", {
+            bars: ["bar1", "bar2", "bar3", "bar4"],
+            developer: function(event) {
+                console.log("developer", event);
+            },
+            logIn: function(event) {
+                // this.query = "adhikari";
+                this.here = "himanshu";
+                // console.log("logIn", this, event);
+            },
+            hightlight: function(event) {
+                // console.log("hightlight", event);
+            },
+            query: 'himanshu',
+            search: "Type to Search",
+            here: "here",
+            students: [{
+                name: "himanshu",
+                age: 30
+            }, {
+                name: "vivek",
+                age: 28
+            }]
+        });
         </script>
-    </chanters-header> -->
-    <button onclick="getCurTime()" type="button">Get current time position</button>
-    <button onclick="setCurTime()" type="button">Set time position to 5 seconds</button>
-    <br>
-    <audio id="myVideo" width="320" height="176" controls>
-        <source src="/home/himanshu/Videos/01._Alfaaz_ft_Honey_Singh_-_Haye_Mera_Dil_-_www.djsbuzz.blogspot.Com.mp3" type="video/mp4">
-        browser
-    </audio>
-    <script>
-    var vid = document.getElementById("myVideo");
-
-    function getCurTime() {
-        alert(vid.currentTime);
-    }
-
-    function setCurTime() {
-        vid.currentTime = 50;
-    }
-    </script>
+    </chanters-header>
 </body>
 
 </html>

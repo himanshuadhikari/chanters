@@ -21,6 +21,8 @@
                         <div id="bar3"></div>
                         <div id="bar4"></div>
                     </div>
+                    <span style="margin-left:400px;" >{{placeholder}}<span>
+                    <input type="text" style="margin-left:400px;" value="{{placeholder}}">
                     <div class="logout">
                         <button class="txt-shadow btn-menu">Developers</button>
                         <button class="txt-shadow btn-menu">Log In</button>
@@ -28,7 +30,9 @@
                 </div>
             </template>
             <script>
-            Chanters("chanters-header", {});
+            Chanters("chanters-header", {
+                placeholder: "type to search here..."
+            });
             </script>
         </chanters-header>
         <chanters-background attributes="src:images/vidyut-jamwal-7a.jpg">

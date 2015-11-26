@@ -7,12 +7,12 @@ app.use(express.static(__dirname + '/public'));
 app.engine('html', require('ejs').renderFile);
 
 
-// app.get('/', function(req, res) {
-//     res.render('index.html');
-// });
 app.get('/', function(req, res) {
-    res.render(__dirname + '/public/view/player.html');
+    res.render('index.html');
 });
+// app.get('/', function(req, res) {
+//     res.render(__dirname + '/public/view/player.html');
+// });
 app.get('/development', function(req, res) {
     res.render(__dirname + '/public/view/development.html');
 });
@@ -53,6 +53,10 @@ app.get('/songList', function(req, res) {
     fs.readdir("/home/himanshu/Videos", function(err, data) {
         res.send(JSON.stringify(data));
     })
+});
+
+app.get('/tictactoe', function(req, res) {
+    res.render(__dirname + '/public/view/tic-tac-toe.html');
 });
 
 app.get('/home/himanshu/Videos/:name', function(req, res) {

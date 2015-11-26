@@ -46,6 +46,14 @@
 
      **/
 
+    function forLoop(arr, callback) {
+        if (arr && arr.length)
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i] && typeof callback === "function")
+                    callback(arr[i], i);
+            }
+    }
+
     var isArray = Array.isArray;
 
     function forEach(obj, iterator) {
@@ -252,10 +260,411 @@
     }
 
 
-    function chanters(name, prototype) {
-        console.log(name, prototype);
-        console.log(document.querySelector(name + " template").content);
+    function Chanters(name, prototype) {
+        if (name && typeof name === "object")
+            throw "please provide template name";
+        else {
+            init(name, prototype);
+        }
+    }
+
+
+    function init(name, prototype) {
+        var node = document.querySelector(name);
+        var webComponent = new WebComponent(node, prototype);
+        node.parentNode.replaceChild(webComponent, node);
+        // console.log(webComponent);
+        // webComponent.walkNodes();
+    }
+
+    function WebComponent(node, proto) {
+        var node_ = node;
+        var prototype_ = {};
+        var template = node_.querySelector("template");
+
+        this.node = this.createHTMLElement(node.nodeName);
+        this.node.appendChild(document.importNode(template.content, true));
+        this.node.prototype = proto;
+        this.node.templateInstance = {};
+
+        this.iterateOverNodes = function(node_) {
+            var self = this;
+            var getters = new Getters(this.node);
+            var setters = new Setters(this.node, proto);
+            var observer = new Observers(this.node, proto);
+            observer.observe();
+
+            walkNodes(this.node, function(node) {
+                getters.init(node);
+                setters.init(node);
+            });
+
+        }
+
+        this.iterateOverNodes(node_);
+
+        return this.node;
 
     }
-    window.chanters = chanters;
+
+    function Observers(target, object) {
+        this.observer = Object.observe || Object.watch,
+            this.target = target;
+        var self = this;
+        self.object = {};
+
+        forEach(object, function(key, value) {
+            if (typeof value !== "function")
+                self.object[key] = value;
+        })
+
+    }
+
+    Observers.prototype.observe = function() {
+        var tag = this.target,
+            self = this;
+        this.setObject();
+
+        if (Object.watch) {
+            // for firefox
+            forEach(tag.prototype, function(key) {
+                if (tag.prototype[key] && typeof tag.prototype[key] !== "function")
+                    tag.watch(key, function(id, oldvalue, newvalue) {
+                        debugger;
+
+                        // code here for firefox
+
+                        // forLoop(changes, function(change) {
+                        //     self.watchers(change);
+                        // });
+                    });
+            })
+
+        } else {
+            // for chrome
+            this.observer(this.target, function(changes) {
+                forLoop(changes, function(change) {
+                    self.watchers(change);
+                })
+            })
+        }
+
+
+    }
+
+    Observers.prototype.watchers = function(change) {
+        var affectedProperty = change.name,
+            self = this,
+            affectedNodes = this.target && this.target.templateInstance && this.target.templateInstance[change.name] || [];
+        if (affectedNodes.length)
+            forLoop(affectedNodes, function(object) {
+
+                // for input fields binding
+                if (object.node.nodeName === "INPUT" && self.target.prototype.target !== object.node) {
+                    object.node.value = change.object.query;
+                } else if (object.node.nodeName === "#text") {
+                    var rawTextContent = object.value;
+                    var replaceArr = getReplaceArr(rawTextContent);
+                    var replaceWith = [];
+
+                    if (replaceArr.length)
+                        replaceArr.forEach(function(from) {
+                            replaceWith.push(self.target[from]);
+                        })
+
+                    object.node.textContent = rawTextContent;
+                    performBinding(object.node, replaceArr, replaceWith);
+                }
+            })
+
+        delete self.target.event;
+    }
+
+    Observers.prototype.setObject = function() {
+        var self = this;
+        forEach(this.object, function(key, value) {
+            self.target[key] = self.object[key];
+        })
+    }
+
+    function Setters(tag, proto) {
+        this.node = tag;
+        this.prototype = proto;
+    }
+
+    Setters.prototype.init = function(node, object, iteratorObject) {
+        if (!this.node) {
+            this.prototype_ = object;
+        }
+        var self = this;
+        // debugger;
+        if (node && node.prototype) {
+            forEach(node.prototype, function(key) {
+                if (key === "events")
+                    self.setEvents(node);
+                else if (key === "texts")
+                    self.setText(node, iteratorObject);
+                else if (key === "repeaters")
+                    executeRepeaters(node, self.prototype);
+            })
+        }
+    }
+
+    function cloneTemplate(t) {
+        var t_ = document.createElement("template");
+        t_.innerHTML = t.innerHTML;
+        return t_;
+    }
+
+    function executeRepeaters(node, object) {
+        var clone = cloneTemplate(node);
+        // var clone = document.createElement("template");
+        var repeaterInfo = node.prototype.repeaters[0];
+        var templateObject = repeaterInfo.object;
+
+        // console.log(node);
+
+        forEach(templateObject, function(value, index) {
+            var clone = cloneTemplate(node);
+            if (typeof value !== "object") {
+                walkNodes(clone.content, function(node_) {
+                    Getters.prototype.init(node_);
+                    console.log(node_);
+                })
+            } else if (typeof value === "object") {
+                // console.log("repeating on array of object", object);
+
+            }
+            // debugger;
+        })
+
+        // forEach(iteratorObject, function(value) {
+        //     if (typeof value !== "object") {
+        //         var newNode = document.importNode(node.content, true);
+        //         node.parentNode.insertBefore(newNode, node.nextSibling);
+        //         // giving newNode i.e last child of 
+        //         node.parentNode.lastElementChild.value = value;
+        //     }
+        // })
+        // console.log(newNode, repeaterInfo, iteratorObject);
+
+        // forLoop(node.prototype.repeaters, function(repeaterObject) {
+        // walkNodes(clone.content, function(node_) {
+        //     Getters.prototype.init(node_);
+        //     forLoop(iteratorObject, function(value) {
+        //         Setters.prototype.init(node_, object, iteratorObject);
+        //     })
+        // })
+
+    }
+
+
+
+    Setters.prototype.setEvents = function(node) {
+        var self = this;
+        if (!self.prototype)
+            self.prototype = self.prototype_;
+        forLoop(node.prototype.events, function(eventObject) {
+            if (self.prototype[eventObject.callback]) {
+                if (node.tagName === "INPUT") {
+                    var callback = function(event) {
+                        this.prototype.target = event.target;
+                        this[eventObject.callback] = event.target.value;
+                    }.bind(self.node);
+
+                    self.mapNodes(node, eventObject.callback);
+                    node.value = self.prototype[eventObject.callback];
+                    node.removeAttribute("value");
+
+                    if (self.prototype[eventObject.callback] && typeof self.prototype[eventObject.callback] === "function") {
+                        var callback = self.prototype[eventObject.callback].bind(self.node);
+                    }
+
+                } else {
+                    var callback = self.prototype[eventObject.callback].bind(self.node);
+                }
+                registerElement(node, eventObject.eventName, callback);
+
+            }
+        })
+    }
+
+    Setters.prototype.setText = function(node, iteratorObject) {
+        var self = this;
+        // debugger;
+        var replaceWith = this.replaceWith(node.prototype.texts, node);
+        if (replaceWith && replaceWith.length) {
+            performBinding(node, node.prototype.texts, replaceWith);
+        }
+    }
+
+    Setters.prototype.mapNodes = function(node, key) {
+        if (!this.node.templateInstance[key])
+            this.node.templateInstance[key] = [];
+
+        this.node.templateInstance[key].push({
+            "node": node,
+            "value": node.textContent
+        })
+    }
+
+    Setters.prototype.replaceWith = function(arr, node) {
+        var replaceWith = [],
+            self = this;
+        forLoop(arr, function(key) {
+            if (self.prototype[key]) {
+                self.mapNodes(node, key)
+                replaceWith.push(self.prototype[key]);
+            }
+        })
+        return replaceWith;
+    }
+
+    function performBinding(n, from, With, str_) {
+        var str = str_ || n.textContent;
+        for (var i = 0; i < from.length; i++) {
+            str = str.replace(new RegExp('{{' + from[i] + '}}', 'gi'), With[i]);
+            if (!str_)
+                n.textContent = str;
+        }
+        if (str_)
+            return str;
+    }
+
+    function walkNodes(node, callback) {
+        if (node.childNodes.length > 0) {
+            var child = node.firstChild;
+            while (child) {
+                if (callback && typeof callback === "function")
+                    callback(child);
+
+                walkNodes(child, callback);
+                child = child.nextSibling;
+            }
+        }
+    }
+
+
+
+    WebComponent.prototype.createHTMLElement = function(tagName) {
+        return document.createElement(tagName);
+    }
+
+    function Getters(tag) {
+        this.node = tag;
+    }
+
+    Getters.prototype.init = function(node, nodeObject) {
+        if (ifTextContent(node) && node.nodeType === 1)
+            this.getEvents(node);
+        else if (ifTextContent(node) && node.nodeType === 3) {
+            this.getText(node, nodeObject);
+        } else if (node.nodeName === "INPUT") {
+            this.getInputEvents(node);
+        } else if (node.nodeName === "TEMPLATE")
+            this.getRepeaters(node);
+    }
+
+    Getters.prototype.getRepeaters = function(node) {
+        if (!node.prototype)
+            node.prototype = {};
+
+        if (!node.prototype.repeaters)
+            node.prototype.repeaters = [];
+
+        var repeaterString = node.getAttribute("repeat");
+
+        node.prototype.repeaters.push({
+            "str": repeaterString,
+            "value": repeaterString.split(" ")[2],
+            "key": repeaterString.split(" ")[0],
+            "object": this.node.prototype[repeaterString.split(" ")[2]] || []
+        });
+    }
+
+    Getters.prototype.getEvents = function(node) {
+        forLoop(node.attributes, function(nodeAttributes) {
+            if (nodeAttributes.name.indexOf("on-") !== -1) {
+                var events = {
+                    "eventName": nodeAttributes.name.substring(3),
+                    "callback": getReplaceArr(nodeAttributes.value)[0]
+                }
+                if (!node.prototype)
+                    node.prototype = {};
+
+                if (!node.prototype.events)
+                    node.prototype.events = [];
+
+                node.prototype.events.push(events);
+            }
+        });
+    }
+
+    Getters.prototype.getInputEvents = function(node) {
+        var value = node.value;
+        this.getEvents(node);
+
+        if (getReplaceArr(value)) {
+            var events = {
+                "eventName": 'input',
+                "callback": getReplaceArr(node.value)[0]
+            }
+            if (!node.prototype)
+                node.prototype = {};
+
+            if (!node.prototype.events)
+                node.prototype.events = [];
+
+            node.prototype.events.push(events);
+        }
+    }
+
+    Getters.prototype.getText = function(node) {
+        var str = node.textContent;
+        var self = this;
+        if (getReplaceArr(str)) {
+            var keys = getReplaceArr(str);
+
+            if (keys && keys.length) {
+                forLoop(keys, function(value) {
+                    if (!node.prototype)
+                        node.prototype = {};
+
+                    if (!node.prototype.texts)
+                        node.prototype.texts = [];
+
+                    node.prototype.texts.push(value);
+                })
+            }
+
+        }
+
+
+
+        // console.log(getReplaceArr(str));
+    }
+
+
+    function registerElement(n, eventName, callback) {
+        n.addEventListener(eventName, callback);
+    }
+
+
+    function ifTextContent(n) {
+        if (n.textContent.trim().length)
+            return true;
+        else
+            return false;
+    }
+
+    function getReplaceArr(str) {
+        if (str.indexOf("{{") !== -1)
+            return str.trim().match(/{{\s*[\w\.]+\s*}}/g).map(function(x) {
+                return x.match(/[\w\.]+/)[0];
+            });
+    }
+
+
+
+    window.Chanters = Chanters;
 })(window, document);

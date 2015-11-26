@@ -149,7 +149,6 @@ var helper = {
                 // place for attribute binding of parent node
                 var oldValue = n.attributes[i].value;
                 var name = n.attributes[i].name;
-
                 var replaceArr_ = this.getReplaceArr(oldValue);
                 var replaceWith = this.getReplaceWith(replaceArr_);
 
