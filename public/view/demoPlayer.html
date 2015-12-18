@@ -5,6 +5,7 @@
         <div id="title" class="btn-menu"> <span>Chanters</span></div>
         <ul id="songList">
         </ul>
+        <video id="videoPlayer" controls></video>
         <canvas id="analyser"></canvas>
         <style type="text/css">
         chanters-player {
@@ -69,6 +70,7 @@
             border-bottom: 1px dotted #DDD;
             transition: all 100ms ease-in;
             position: relative;
+            display: block;
         }
         
         #songList li:hover {
@@ -83,6 +85,11 @@
             padding-left: 17px;*/
             padding: 10px;
             height: inherit;
+        }
+        
+        #songList li:after,
+        #songList li:before {
+            clear: both;
         }
         
         audio {
@@ -191,6 +198,18 @@
         input[type=range]:focus::-ms-fill-upper {
             background: #ac51b5;
         }
+        
+        #videoPlayer {
+            height: 97%;
+            width: 85%;
+            left: 15%;
+            position: fixed;
+            z-index: 999999;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            opacity: 0;
+            transition: all 1s ease-in;
+        }
         </style>
     </template>
     <script>
@@ -221,12 +240,13 @@
         var list_ = event.target.files;
         var str = "";
         for (var i = 0; i < list_.length; i++) {
-            if (list_[i].name.indexOf(".mp3")) {
-                var li = document.createElement('li');
-                li.innerHTML = '<a onclick="playMe(event)"> ' + list_[i].name + ' </a>';
-                li.songObject = list_[i];
-                document.querySelector("#songList").appendChild(li);
-            }
+            // if (list_[i].name.indexOf(".mp3") !== -1) {
+            var li = document.createElement('li');
+            li.innerHTML = '<a onclick="playMe(event)"> ' + list_[i].name + ' </a>';
+            li.songObject = list_[i];
+            document.querySelector("#songList").appendChild(li);
+            // getImageFromMp3(list_[i]);
+            // }
         }
         welcome.remove();
         document.querySelector("#fileupload").remove();
@@ -234,7 +254,30 @@
 
     }
 
+    function getImageFromMp3(file) {
+        id3(file, function(err, tags) {
+            var li = document.createElement('li');
+
+            if (tags && tags.v2 && tags.v2.image) {
+                var arrayBufferView = new Uint8Array(tags.v2.image.data);
+                tags.v2.image.mime = tags.v2.image.mime || 'image/jpeg';
+                var blob = new Blob([arrayBufferView], {
+                    type: tags.v2.image.mime
+                });
+                var urlCreator = window.URL || window.webkitURL;
+                var imageUrl = urlCreator.createObjectURL(blob);
+
+                li.innerHTML = '<image src="' + imageUrl + '"/><a onclick="playMe(event)"> ' + file.name + ' </a>';
+            } else {
+                li.innerHTML = '<a onclick="playMe(event)"> ' + file.name + ' </a>';
+            }
+            li.songObject = file;
+            document.querySelector("#songList").appendChild(li);
+        });
+    }
+
     var audio = new Audio();
+    var video = document.querySelector("video");
     context = new AudioContext();
     analyser = context.createAnalyser();
     source = context.createMediaElementSource(audio);
@@ -254,10 +297,29 @@
         if (event)
             event.target.parentNode.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
         var file = previous.songObject;
+
         var _URL = window.URL || window.webkitURL;
-        audio.src = _URL.createObjectURL(file);
-        audio.load();
-        audio.play();
+
+        if (file.name.indexOf(".mp4") !== -1) {
+            if (audio)
+                audio.pause();
+            video.src = _URL.createObjectURL(file);
+            video.style.opacity = "0.9";
+            video.style.display = "block";
+            video.load();
+            video.play();
+        } else {
+            audio.src = _URL.createObjectURL(file);
+            if (video) {
+                video.pause();
+                video.style.opacity = "0";
+                // video.style.display = "none";
+            }
+            audio.load();
+            audio.play();
+        }
+
+
         if (!nextSong)
             event.target.parentNode.appendChild(canvas);
         visualizer();
@@ -395,5 +457,21 @@
     }
 
     document.addEventListener("keydown", keyEvent);
+
+    // var reader = new FileReader();
+    // reader.onload = function(e) {
+    //     var dv = new jDataView(this.result);
+
+    //     if (dv.getString(3, dv._view.byteLength - 128) == 'TAG') {
+    //         var title = dv.getString(30, dv.tell());
+    //         var artist = dv.getString(30, dv.tell());
+    //         var album = dv.getString(30, dv.tell());
+    //         var year = dv.getString(4, dv.tell());
+    //     } else {
+    //         // no ID3v1 data found.
+    //     }
+    //     debugger;
+    // }
+    // reader.readAsArrayBuffer(file);
     </script>
 </chanters-player>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Play snake game</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .wall {
+        border: 1px solid red;
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 100%;
+        /*margin: 20px;*/
+    }
+    
+    body {
+        position: relative;
+        padding: 20px;
+    }
+    
+    #food,
+    .snake {
+        height: 15px;
+        width: 15px;
+        background: black;
+        position: fixed;
+        border-radius: 5px;
+        display: inline-block;
+    }
+    
+    .snake {
+        top: 30%;
+        left: 50%;
+    }
+    
+    #food {
+        left: 30%;
+        top: 30%;
+    }
+    </style>
+    <script src="..//scripts/snake.js"></script>
+</head>
+
+<body>
+    <div class="wall">
+        <div id="food"></div>
+        <ul class="body">
+            <li class="snake">
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
