@@ -1,12 +1,5 @@
 <chanters-player>
     <template>
-        <div id="welcome"></div>
-        <input type="file" id="fileupload" multiple onchange="createList(event)">
-        <div id="title" class="btn-menu"> <span>Chanters</span></div>
-        <ul id="songList">
-        </ul>
-        <video id="videoPlayer" controls></video>
-        <canvas id="analyser"></canvas>
         <style type="text/css">
         chanters-player {
             position: fixed;
@@ -211,6 +204,13 @@
             transition: all 1s ease-in;
         }
         </style>
+        <div id="welcome"></div>
+        <input type="file" id="fileupload" multiple onchange="createList(event)">
+        <div id="title" class="btn-menu"> <span>Chanters</span></div>
+        <ul id="songList">
+        </ul>
+        <video id="videoPlayer" controls></video>
+        <canvas id="analyser"></canvas>
     </template>
     <script>
     Chanters("chanters-player", {
@@ -221,6 +221,39 @@
     var welcome = document.querySelector("#welcome");
     var str = "welcome to chanters";
     var count = 0;
+
+    function notifyMe(songName) {
+        // Let's check if the browser supports notifications
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+        }
+
+        // Let's check whether notification permissions have already been granted
+        else if (Notification.permission === "granted") {
+            // If it's okay let's create a notification
+            var notification = new Notification("Chanters : Now playing", {
+                "body": songName,
+            })
+
+        }
+
+        // Otherwise, we need to ask the user for permission
+        else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function(permission) {
+                // If the user accepts, let's create a notification
+                if (permission === "granted") {
+                    var notification = new Notification("Hi there!");
+                    var notification = new Notification("Chanters : Hi there!", {
+                        "body": "Welcome to Chanters",
+                    })
+                }
+            });
+        }
+
+        // At last, if the user has denied notifications, and you 
+        // want to be respectful there is no need to bother them any more.
+    }
+
 
     function welcomeAnimation() {
         if (str[count]) {
@@ -299,6 +332,8 @@
         var file = previous.songObject;
 
         var _URL = window.URL || window.webkitURL;
+
+        notifyMe(file.name);
 
         if (file.name.indexOf(".mp4") !== -1) {
             if (audio)
