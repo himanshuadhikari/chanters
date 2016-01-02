@@ -4,11 +4,9 @@
         <div class="container-fluid child-container">
             <div class="login-wrap border light-div box-shadow-inset">
                 <div class="dark-div btm-border">
-                    <a href="/default">
-                    <button class="form-text btn-login txt-shadow">
-                    Login
+                    <button class="form-text btn-login txt-shadow" on-click="{{goToPlayer}}" style="pointer:cursor">
+                        Login
                     </button>
-                    </a>
                 </div>
                 <div class="form-wrap btm-border">
                     <input type="text" autofocus class="form-text email txt-shadow" placeholder="Email address">
@@ -20,7 +18,10 @@
         </div>
     </template>
     <script>
-    console.log("login.html")
-    Chanters("chanters-login", {});
+    Chanters("chanters-login", {
+        goToPlayer: function() {
+            location.pathname = "/player";
+        }
+    });
     </script>
 </chanters-login>

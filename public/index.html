@@ -10,18 +10,17 @@
     <script>
     function selectme(event) {
         console.log("hello");
-        debugger;
     }
     </script>
 </head>
 
 <body>
-    <canvas id="analyser"></canvas>
+    <!-- <canvas id="analyser"></canvas>
     <audio controls repeat></audio>
-    <button onclick="play()">play</button>
-    <input type="file" webkitdirectory directory multiple onchange="selectme(event)" />
+    <button onclick="play()">play</button> -->
+    <!-- <input type="file" webkitdirectory directory multiple onchange="selectme(event)" /> -->
     <div class="wrapper-fluid">
-        <chanters-header>      
+        <chanters-header>
             <template>
                 <div id="header" class="header btm-border dark-div fixed-top">
                     <div id="logo" class="border">
@@ -31,13 +30,17 @@
                         <div id="bar4"></div>
                     </div>
                     <div class="logout">
-                        <button class="txt-shadow btn-menu">Developers</button>
-                        <button class="txt-shadow btn-menu">Log In</button>
+                        <button class="txt-shadow btn-menu" on-click="{{goToPlayer}}">Player</button>
+                        <!-- <button class="txt-shadow btn-menu">Log In</button> -->
                     </div>
                 </div>
             </template>
             <script>
-            Chanters("chanters-header", {});
+            Chanters("chanters-header", {
+                goToPlayer: function() {
+                    location.pathname = "/player";
+                }
+            });
             </script>
         </chanters-header>
         <chanters-background attributes="src:images/vidyut-jamwal-7a.jpg">
@@ -50,12 +53,17 @@
             Chanters("chanters-background", {});
             </script>
         </chanters-background>
-        <chanters-view attributes="template:/login">
+        <chanters-view attributes="template:/login" clsss="dark-div">
             <template>
             </template>
             <script>
             Chanters("chanters-view", {
                 domReady: function() {
+                    if (location.pathname === "/") {
+                        setTimeout(function() {
+                            this.style.backgroundColor = "rgba(0,0,0,0.0)";
+                        }.bind(this), 200);
+                    }
                     this.loadTemplate(function(error, userRequestedFile) {
                         this.insertToDom(userRequestedFile);
                     }.bind(this));

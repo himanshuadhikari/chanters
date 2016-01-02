@@ -100,7 +100,6 @@ body {
     /*background-image:url('../siteimages/Him207.jpg');
     background-repeat:no-repeat;
     background-size: 100%;*/
-    
     z-index: 1;
     transition: all 1s ease-in-out;
 }
@@ -109,7 +108,11 @@ body {
     width: 100%;
 }
 
-chanters-view{
-    /*border: 1px solid red;*/
+chanters-view {
+    position: fixed;
+    background-color: rgba(0,0,0,0.5);
     margin-top: 40px;
+    height: 100%;
+    width: 100%;
+    transition: all 1s ease-in-out;
 }

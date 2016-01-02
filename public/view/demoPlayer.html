@@ -6,8 +6,13 @@
             left: 0px;
             top: 0px;
             background-color: rgba(0, 0, 0, 0.5);
-            width: 15%;
+            width: 18%;
             z-index: 99;
+            display: none;
+            height: 0%;
+            transition: all 2s ease-in-out;
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: inset -2px 0px 3px 2px rgba(0, 0, 0, 0.3);
         }
         
         canvas {
@@ -34,12 +39,11 @@
         
         #title {
             padding: 12px 14px;
-            border: 1px solid;
-            width: 100%;
             margin: 0;
             border: none;
+            display: none;
             border-radius: 0px;
-            width: 90%;
+            width: 92%;
         }
         
         input {
@@ -53,22 +57,19 @@
             display: none;
             position: fixed;
             height: 100%;
-            width: 15%;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            background-color: rgba(0, 0, 0, 0.5);
+            width: 18%;
+            /*overflow-y: scroll;
+            overflow-x: hidden;*/
+            overflow: hidden;
+            transition: all 500s ease-in-out;
         }
         
         #songList li {
             border-bottom: 1px dotted #DDD;
-            transition: all 100ms ease-in;
+            transition: all 2s ease-in-out;
             position: relative;
             display: block;
-        }
-        
-        #songList li:hover {
-            padding-left: 10px;
-            background-color: rgba(0, 0, 0, 0.3);
+            opacity: 0;
         }
         
         #songList li a {
@@ -78,6 +79,12 @@
             padding-left: 17px;*/
             padding: 10px;
             height: inherit;
+            transition: all 500s ease-in-out;
+        }
+        
+        a:hover {
+            padding-left: 20px;
+            background-color: rgba(0, 0, 0, 0.3);
         }
         
         #songList li:after,
@@ -204,13 +211,15 @@
             transition: all 1s ease-in;
         }
         </style>
-        <div id="welcome"></div>
-        <input type="file" id="fileupload" multiple onchange="createList(event)">
-        <div id="title" class="btn-menu"> <span>Chanters</span></div>
-        <ul id="songList">
-        </ul>
-        <video id="videoPlayer" controls></video>
-        <canvas id="analyser"></canvas>
+        <div style="position:relative">
+            <div id="welcome"></div>
+            <input type="file" id="fileupload" multiple onchange="createList(event)">
+            <div id="title"> <span>Chanters</span></div>
+            <ul id="songList" class="border box-shadow-inset">
+            </ul>
+            <video id="videoPlayer" controls></video>
+            <canvas id="analyser"></canvas>
+        </div>
     </template>
     <script>
     Chanters("chanters-player", {
@@ -221,6 +230,7 @@
     var welcome = document.querySelector("#welcome");
     var str = "welcome to chanters";
     var count = 0;
+    var notification;
 
     function notifyMe(songName) {
         // Let's check if the browser supports notifications
@@ -231,10 +241,13 @@
         // Let's check whether notification permissions have already been granted
         else if (Notification.permission === "granted") {
             // If it's okay let's create a notification
-            var notification = new Notification("Chanters : Now playing", {
+            if (notification)
+                notification.close();
+            notification = new Notification("Chanters : Now playing", {
                 "body": songName,
+                "icon": "images/vidyut-jamwal-7a.jpg",
+                renotify: true
             })
-
         }
 
         // Otherwise, we need to ask the user for permission
@@ -245,6 +258,7 @@
                     var notification = new Notification("Hi there!");
                     var notification = new Notification("Chanters : Hi there!", {
                         "body": "Welcome to Chanters",
+                        renotify: true
                     })
                 }
             });
@@ -269,23 +283,42 @@
         }
     }
 
+
     function createList(event) {
-        var list_ = event.target.files;
-        var str = "";
+        var list_ = event.target.files,
+            str = "",
+            songList = document.querySelector("#songList"),
+            chantersPlayer = document.querySelector("chanters-player");
+        document.querySelector("#songList ").style.display = "block";
+        document.querySelector("chanters-view").style.backgroundColor = "transparent";
+
         for (var i = 0; i < list_.length; i++) {
-            // if (list_[i].name.indexOf(".mp3") !== -1) {
             var li = document.createElement('li');
-            li.innerHTML = '<a onclick="playMe(event)"> ' + list_[i].name + ' </a>';
-            li.songObject = list_[i];
-            document.querySelector("#songList").appendChild(li);
+            (function(li, i) {
+                // if (list_[i].name.indexOf(".mp3") !== -1) {
+                li.innerHTML = '<a onclick="playMe(event)"> ' + list_[i].name + ' </a>';
+                li.songObject = list_[i];
+                songList.appendChild(li);
+                setTimeout(function() {
+                    li.style.opacity = 1;
+                    if (chantersPlayer.clientHeight < chantersPlayer.parentNode.clientHeight) {
+                        if (!chantersPlayer.style.height)
+                            chantersPlayer.style.height = chantersPlayer.clientHeight + 4 + "px";
+                        else {
+                            chantersPlayer.style.height = parseInt(chantersPlayer.style.height.split("px")[0]) + 4 + "px";
+                        }
+                    }
+                }, 2000);
+
+            })(li, i);
             // getImageFromMp3(list_[i]);
             // }
         }
         welcome.remove();
         document.querySelector("#fileupload").remove();
-        document.querySelector("#songList ").style.display = "block";
-
+        document.querySelector("#title").style.display = "block";
     }
+
 
     function getImageFromMp3(file) {
         id3(file, function(err, tags) {
@@ -509,6 +542,11 @@
     }
 
     document.addEventListener("keydown", keyEvent);
+    document.querySelector("#songList").addEventListener("wheel", scrollList);
+
+    function scrollList(event) {
+        console.log(event);
+    };
 
     // var reader = new FileReader();
     // reader.onload = function(e) {
