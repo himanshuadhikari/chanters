@@ -544,8 +544,20 @@
     document.addEventListener("keydown", keyEvent);
     document.querySelector("#songList").addEventListener("wheel", scrollList);
 
+    var lastScrollTop = 0;
+
     function scrollList(event) {
-        console.log(event);
+        var delta = 0;
+        if (!event) event = window.event;
+        if (event.wheelDelta) {
+            delta = event.wheelDelta / 60;
+        } else if (event.detail) {
+            delta = -event.detail / 2;
+        }
+        var currPos = this.scrollTop;
+        currPos = parseInt(currPos) - (delta * 10);
+        this.scrollTop = currPos;
+        console.log(currPos);
     };
 
     // var reader = new FileReader();
