@@ -10,7 +10,7 @@ var userDao = require("./server/userDao.js");
 
 // app.get('/', route);
 
-var port = process.env.PORT || 4444;
+var port = process.env.PORT || 4443;
 
 var server = app.listen(port, function() {
     var host = server.address().address;

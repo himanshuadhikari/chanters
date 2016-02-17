@@ -11,8 +11,8 @@ var helper = {
 
         // this check is important coz if we are giving attribute by ourself then error coming 
         // in our case see line number 28 of append function where we are setting display block value in style
-        if (this.userData.target.getAttribute("attributes"))
-            this.attributeObserver(this.userData.target_);
+        // if (this.userData.target.getAttribute("attributes"))
+        //     this.attributeObserver(this.userData.target_);
 
         this.copy(properties);
         this.append();
@@ -307,6 +307,7 @@ var helper = {
                 this.count = 0;
             }
             this.walkDeepNodes(n, this.condition, this.count);
+            debugger;
             // console.log(this.condition);
         } else {
             // console.log("specialTemplate", n, this.condition);

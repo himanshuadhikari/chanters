@@ -1,0 +1,35 @@
+[{
+    "markup": "bar in bars",
+    "type": "repeat",
+    "clone": {},
+    "parent": {},
+    "nextSibling_": {},
+    "key_": "ba",
+    "template": {},
+    "children": [{
+        "children": []
+    }, {
+        "children": [{
+            "children": []
+        }]
+    }, {
+        "children": []
+    }]
+}, {
+    "markup": "student in students",
+    "type": "repeat",
+    "clone": {},
+    "parent": {},
+    "nextSibling_": {},
+    "key_": "studen",
+    "template": {},
+    "children": [{
+        "children": []
+    }, {
+        "children": [{
+            "children": []
+        }]
+    }, {
+        "children": []
+    }]
+}]
